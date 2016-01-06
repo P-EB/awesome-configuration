@@ -21,7 +21,7 @@ end
 theme = {}
 theme.scale = scale()
 theme.icons = icons
-theme.wallpaper = "/usr/share/wallpapers/joy_inksplat/contents/images/1366x768.png"
+theme.wallpaper = "/home/becue/.config/awesome/wallpapers/debian-red-logo-wallpapers_34062_1366x768.jpg"
 theme.font = "Terminus " .. 8 * theme.scale
 theme.tasklist_font = "DejaVu Sans " .. 8 * theme.scale
 

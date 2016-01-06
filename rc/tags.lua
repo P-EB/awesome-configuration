@@ -11,84 +11,65 @@ local tagicon = function(icon)
 end
 
 shifty.config.tags = {
-   www = {
-      position = 3,
-      mwfact = 0.7,
-      exclusive = true,
-      max_clients = 1,
-      screen = math.min(screen.count(), 2),
-      spawn = config.browser,
-      icon = tagicon("web")
-   },
-   emacs = {
-      position = 2,
-      mwfact = 0.6,
-      exclusive = true,
-      screen = 1,
-      spawn = "emacs",
-      icon = tagicon("dev"),
-   },
-   xterm = {
-      position = 1,
-      layout = awful.layout.suit.fair,
-      exclusive = true,
-      slave = true,
-      spawn = config.terminal,
-      icon = tagicon("main"),
-   },
-   im = {
-      position = 4,
-      mwfact = 0.2,
-      exclusive = true,
-      screen = math.min(screen.count(), 2),
-      icon = tagicon("im"),
-      nopopup = true,           -- don't give focus on creation
-   },
-   spotify = {
-      screen = 1,
-      exclusive = true
-   }
+--    www = {
+--       position = 2,
+--       mwfact = 0.7,
+--       exclusive = true,
+--       max_clients = 1,
+--       screen = math.max(screen.count(), 2),
+--       spawn = config.browser,
+--       icon = tagicon("web")
+--    },
+--    gvim = {
+--       position = 5,
+--       mwfact = 0.6,
+--       exclusive = true,
+--       screen = 1,
+--       spawn = "gvim",
+--       icon = tagicon("dev"),
+--    }
+--    gterm = {
+--       position = 1,
+--       layout = awful.layout.suit.fair,
+--       exclusive = true,
+--       slave = true,
+--       spawn = config.terminal,
+--       icon = tagicon("main"),
+--    }
+--    im = {
+--       position = 4,
+--       mwfact = 0.2,
+--       exclusive = true,
+--       screen = math.max(screen.count(), 2),
+--       icon = tagicon("im"),
+--       nopopup = true,           -- don't give focus on creation
+--    }
 }
 
 -- Also, see rules.lua
 shifty.config.apps = {
-   {
-      match = { role = { "browser" } },
-      tag = "www",
-   },
-   {
-      match = { "emacs" },
-      tag = "emacs",
-   },
-   {
-      match = { class = { "Skype", "Pidgin" } },
-      tag = "im",
-   },
-   {
-      match = { class = { "Spotify" } },
-      tag = "spotify"
-   },
-   {
-      match = { config.termclass },
-      startup = {
-         tag = "xterm"
-      },
-      intrusive = true,         -- Display even on exclusive tags
-   },
-   {
-      match = { class = { "Key[-]mon" },
-                role = { "pop[-]up" },
-                name = { "Firebug" },
-                check = function (c)
-                   return awful.rules.match(c,
-                                            { instance = "chromium",
-                                              class = "Chromium",
-                                              name = "Chromium",
-                                              fullscreen = true })
-                end,
-                instance = { "plugin[-]container", "exe" } },
-      intrusive = true,
-   },
+--    {
+--       match = { role = { "browser" } },
+--       tag = "www",
+--    },
+--    {
+--       match = { "gvim" },
+--       tag = "gvim",
+--    },
+--    {
+--       match = { class = { "Keepassx", "Key[-]mon" },
+--                 role = { "pop[-]up" },
+--                 name = { "Firebug" },
+--                 check = function (c)
+--                    return awful.rules.match(c,
+--                                             { instance = "chromium",
+--                                               class = "Chromium",
+--                                               name = "Chromium",
+--                                               fullscreen = true })
+--                 end,
+--                 instance = { "plugin[-]container", "exe" } },
+--       intrusive = true,
+--    },
 }
 
 shifty.config.defaults = {
@@ -110,7 +91,6 @@ end
 config.keys.global = awful.util.table.join(
    config.keys.global,
    keydoc.group("Tag management"),
-   awful.key({ modkey }, "Tab", awful.tag.history.restore, "Switch to previous tag"),
    awful.key({ modkey }, "Left", awful.tag.viewprev),
    awful.key({ modkey }, "Right", awful.tag.viewnext),
    awful.key({ modkey, "Shift"}, "o",
@@ -135,9 +115,9 @@ config.keys.global = awful.util.table.join(
                 end
              end,
              "Send all tags to next screen"),
-   awful.key({ modkey }, 0, shifty.add, "Create a new tag"),
-   awful.key({ modkey, "Shift" }, 0, tag_del_or_rename),
-   awful.key({ modkey, "Control" }, 0, tag_del_or_rename, "Rename or delete tag"))
+   awful.key({ modkey }, "#19", shifty.add, "Create a new tag"),
+   awful.key({ modkey, "Shift" }, "#19", shifty.del, "Delete tag"),
+   awful.key({ modkey, "Control" }, "#19", shifty.rename, "Rename tag"))
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
@@ -146,23 +126,23 @@ for i = 1, (shifty.config.maxtags or 9) do
    config.keys.global = awful.util.table.join(
       config.keys.global,
       keydoc.group("Tag management"),
-      awful.key({ modkey }, i,
+      awful.key({ modkey }, "#" .. i + 9,
                 function ()
                    local t = shifty.getpos(i)
-                   local s = t.screen
+                   local s = awful.tag.getscreen(t)
                    local c = awful.client.focus.history.get(s, 0)
                    awful.tag.viewonly(t)
                    mouse.screen = s
                    if c then client.focus = c end
                 end,
                 i == 5 and "Display only this tag" or nil),
-      awful.key({ modkey, "Control" }, i,
+      awful.key({ modkey, "Control" }, "#" .. i + 9,
                 function ()
                    local t = shifty.getpos(i)
                    t.selected = not t.selected
                 end,
                 i == 5 and "Toggle display of this tag" or nil),
-      awful.key({ modkey, "Shift" }, i,
+      awful.key({ modkey, "Shift" }, "#" .. i + 9,
                 function ()
                    local c = client.focus
                    if c then
@@ -171,7 +151,7 @@ for i = 1, (shifty.config.maxtags or 9) do
                    end
                 end,
                 i == 5 and "Move window to this tag" or nil),
-      awful.key({ modkey, "Control", "Shift" }, i,
+      awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
                 function ()
                    if client.focus then
                       awful.client.toggletag(shifty.getpos(i, {nospawn = true}))

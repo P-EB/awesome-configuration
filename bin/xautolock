@@ -1,0 +1,11 @@
+#!/bin/sh
+
+icon="$1"
+notify=$(dirname $(readlink -f "$0"))/notify-lock
+locker=$(dirname $(readlink -f "$0"))/locker
+
+exec xautolock \
+    -time 10 \
+    -locker "$locker" \
+    -notify 30 \
+    -notifier "$notify $icon"

@@ -7,8 +7,11 @@ local function mouse_follow_focus(c)
    if c.type ~= "dialog" then
       local cc = c:geometry()
       local _, x, y = awful.mouse.client.corner(nil, "top_left")
+      local px, py = mouse.coords()["x"], mouse.coords()["y"]
       if x and y then
-	 mouse.coords({ x = x + 20 , y = y + cc.height / 2 }, true)
+          if not (x <= px and px <= x + cc.width + 2*theme.border_width and y <= py and py <= y + cc.height + 2*theme.border_width) then
+              mouse.coords({ x = x + cc.width / 2 , y = y + cc.height / 2 }, true)
+          end
       end
    end
 end

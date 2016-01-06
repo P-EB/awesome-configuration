@@ -34,17 +34,7 @@ export GDK_CORE_DEVICE_EVENTS=1
 
 systemctl --user import-environment
 
-case "$(hostname)" in
-    neo)
-        xrandr --output HDMI-0 --auto --output HDMI-1 --auto --right-of HDMI-0
-        ;;
-    zoro)
-        xrandr --output eDP1 --auto --dpi 144
-        ;;
-esac
-
-. ~/.config/awesome/bin/xsettingsd-setup
-~/.config/awesome/bin/xss-lock start &
+.~/.config/awesome/bin/xsettingsd-setup
 inputplug -0 -c ~/.config/awesome/bin/input-event 2> /dev/null
 rfkill block all 2> /dev/null
 redshift -l 6.606:46.525 -t 6500:5500 2> /dev/null &

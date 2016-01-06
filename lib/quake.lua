@@ -12,14 +12,14 @@
 -- local quakeconsole = {}
 -- for s = 1, screen.count() do
 --    quakeconsole[s] = quake({ terminal = config.terminal,
--- 			        height = 0.3,
+--                              height = 0.3,
 --                              screen = s })
 -- end
 
 -- config.keys.global = awful.util.table.join(
 --    config.keys.global,
 --    awful.key({ modkey }, "`",
--- 	     function () quakeconsole[mouse.screen]:toggle() end)
+--          function () quakeconsole[mouse.screen]:toggle() end)
 
 -- If you have a rule like "awful.client.setslave" for your terminals,
 -- ensure you use an exception for
@@ -30,9 +30,9 @@ local setmetatable = setmetatable
 local string = string
 local awful  = require("awful")
 local capi   = { mouse = mouse,
-		 screen = screen,
-		 client = client,
-		 timer = timer }
+                 screen = screen,
+                 client = client,
+                 timer = timer }
 
 -- I use a namespace for my modules...
 module("vbe/quake")
@@ -51,16 +51,16 @@ function QuakeConsole:display()
                    nil, self.screen) do
       i = i + 1
       if i == 1 then
-	 client = c
+         client = c
          client:tags({})
       else
-	 -- Additional matching clients, let's remove the sticky bit
-	 -- which may persist between awesome restarts. We don't close
-	 -- them as they may be valuable. They will just turn into a
-	 -- classic terminal.
-	 c.sticky = false
-	 c.ontop = false
-	 c.above = false
+         -- Additional matching clients, let's remove the sticky bit
+         -- which may persist between awesome restarts. We don't close
+         -- them as they may be valuable. They will just turn into a
+         -- classic terminal.
+         c.sticky = false
+         c.ontop = false
+         c.above = false
       end
    end
 
@@ -72,7 +72,7 @@ function QuakeConsole:display()
    if not client then
       -- The client does not exist, we spawn it
       awful.util.spawn(self.terminal .. " " .. string.format(self.argname, self.name),
-		       false, self.screen)
+                       false, self.screen)
       return
    end
 
@@ -126,9 +126,9 @@ function QuakeConsole:new(config)
    config.argname  = config.argname  or "-name %s"     -- how to specify window name
 
    -- If width or height <= 1 this is a proportion of the workspace
-   config.height   = config.height   or 0.25          -- height
-   config.width    = config.width    or 1         -- width
-   config.vert     = config.vert     or "top"         -- top, bottom or center
+   config.height   = config.height   or 0.25           -- height
+   config.width    = config.width    or 1           -- width
+   config.vert     = config.vert     or "top"           -- top, bottom or center
    config.horiz    = config.horiz    or "center"       -- left, right or center
 
    config.screen   = config.screen or capi.mouse.screen

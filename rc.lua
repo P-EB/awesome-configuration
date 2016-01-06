@@ -58,17 +58,19 @@ os.execute("~/.config/awesome/bin/xsettingsd-setup")
 -- Global configuration
 modkey = "Mod4"
 config = {}
-config.terminal = "vbeterm"
-config.termclass = "Vbeterm"
+config.terminal = "gnome-terminal"
+config.termclass = "gterm"
 config.layouts = {
    awful.layout.suit.tile,
    awful.layout.suit.tile.left,
    awful.layout.suit.tile.bottom,
    awful.layout.suit.fair,
    awful.layout.suit.floating,
+   awful.layout.suit.max,
+   awful.layout.suit.max.fullscreen,
 }
 config.hostname = awful.util.pread('uname -n'):gsub('\n', '')
-config.browser = "chromium"
+config.browser = "iceweasel"
 
 -- Remaining modules
 loadrc("xrun")			-- xrun function

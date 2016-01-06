@@ -24,7 +24,7 @@ end
 -- we undo previous actions (hence "toggle"). This function returns a
 -- function that will effectively toggle things.
 local function toggle_window(filter)
-   local undo = {}		-- undo stack
+   local undo = {}        -- undo stack
    client.connect_signal('unmanage',
                      function(c)
                         -- If the client is in the undo stack, remove it
@@ -37,44 +37,44 @@ local function toggle_window(filter)
    local toggle = function()
       -- "Current" screen
       local s = client.focus and client.focus.screen or mouse.screen
-      local cl = filter()	-- Client to toggle
+      local cl = filter()    -- Client to toggle
       if cl and client.focus ~= cl then
-	 -- So, we have a client.
-	 if not cl:isvisible() then
-	    -- But it is not visible. So we will add it to the current
-	    -- tag of the screen where it currently is
-	    local t = assert(awful.tag.selected(cl.screen))
-	    -- Add our tag to the client
-	    undo[#undo + 1] = { cl, t }
-	    awful.client.toggletag(t, cl)
-	 end
+     -- So, we have a client.
+     if not cl:isvisible() then
+        -- But it is not visible. So we will add it to the current
+        -- tag of the screen where it currently is
+        local t = assert(awful.tag.selected(cl.screen))
+        -- Add our tag to the client
+        undo[#undo + 1] = { cl, t }
+        awful.client.toggletag(t, cl)
+     end
 
-	 -- Focus and raise the client
-	 if s ~= cl.screen then
-	    mouse.screen = cl.screen
-	 end
-	 client.focus = cl
-	 cl:raise()
+     -- Focus and raise the client
+     if s ~= cl.screen then
+        mouse.screen = cl.screen
+     end
+     client.focus = cl
+     cl:raise()
       else
-	 -- OK, we need to restore the previously pushed window to its
-	 -- original state.
-	 local i = #undo
-	 while i > 0 do
-	    local cl, t = unpack(undo[i])
-	    -- We only handle visible clients that are attached to the
-	    -- appropriate tag. Otherwise, we try the next one.
-	    if cl and cl:isvisible() and t.selected and
-	       awful.util.table.hasitem(cl:tags(), t) then
-	       awful.client.toggletag(t, cl)
-	       table.remove(undo, i)
-	       return
-	    end
-	    i = i - 1
-	 end
-	 -- Clean up...
-	 while #undo > 10 do
-	    table.remove(undo, 1)
-	 end
+     -- OK, we need to restore the previously pushed window to its
+     -- original state.
+     local i = #undo
+     while i > 0 do
+        local cl, t = unpack(undo[i])
+        -- We only handle visible clients that are attached to the
+        -- appropriate tag. Otherwise, we try the next one.
+        if cl and cl:isvisible() and t.selected and
+           awful.util.table.hasitem(cl:tags(), t) then
+           awful.client.toggletag(t, cl)
+           table.remove(undo, i)
+           return
+        end
+        i = i - 1
+     end
+     -- Clean up...
+     while #undo > 10 do
+        table.remove(undo, 1)
+     end
       end
    end
    return toggle
@@ -163,81 +163,81 @@ local display_nmaster_ncol =
           local nmaster = awful.tag.getnmaster()
           local ncol = awful.tag.getncol()
           nid = naughty.notify(
-				{ title = "Tag configuration",
-				  timeout = 5,
-				  text = "Number of masters: " .. nmaster ..
+                { title = "Tag configuration",
+                  timeout = 5,
+                  text = "Number of masters: " .. nmaster ..
                                      "\nNumber of columns: " .. ncol,
-				  replaces_id = nid }).id
+                  replaces_id = nid }).id
               end
     end)()
 
 config.keys.global = awful.util.table.join(
    keydoc.group("Focus"),
    awful.key({ modkey,           }, "j",
-	     function ()
-		awful.client.focus.byidx( 1)
-		if client.focus then
-		   client.focus:raise()
-		end
-	     end,
-	     "Focus next window"),
+         function ()
+        awful.client.focus.byidx( 1)
+        if client.focus then
+           client.focus:raise()
+        end
+         end,
+         "Focus next window"),
    awful.key({ modkey,           }, "k",
-	     function ()
-		awful.client.focus.byidx(-1)
-		if client.focus then
-		   client.focus:raise()
-		end
-	     end,
-	     "Focus previous window"),
+         function ()
+        awful.client.focus.byidx(-1)
+        if client.focus then
+           client.focus:raise()
+        end
+         end,
+         "Focus previous window"),
    awful.key({ modkey,           }, "u", toggle_im,
-	    "Toggle Pidgin conversation window"),
+        "Toggle Pidgin conversation window"),
    awful.key({ modkey, "Control" }, "j", function ()
-		screen_focus( 1)
-					 end,
-	     "Jump to next screen"),
+        screen_focus( 1)
+                     end,
+         "Jump to next screen"),
    awful.key({ modkey, "Control" }, "k", function ()
-		screen_focus(-1)
-					 end),
+        screen_focus(-1)
+                     end),
 
    keydoc.group("Layout manipulation"),
    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end,
-	     "Increase master-width factor"),
+         "Increase master-width factor"),
    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end,
-	     "Decrease master-width factor"),
+         "Decrease master-width factor"),
    awful.key({ modkey, "Shift"   }, "l",     function ()
                 awful.tag.incnmaster(1)
                 display_nmaster_ncol()
                                              end,
-	     "Increase number of masters"),
+         "Increase number of masters"),
    awful.key({ modkey, "Shift"   }, "h",     function ()
                 awful.tag.incnmaster(-1)
                 display_nmaster_ncol()
                                              end,
-	     "Decrease number of masters"),
+         "Decrease number of masters"),
    awful.key({ modkey, "Control" }, "l",     function ()
                 awful.tag.incncol(1)
                 display_nmaster_ncol()
                                              end,
-	     "Increase number of columns"),
+         "Increase number of columns"),
    awful.key({ modkey, "Control" }, "h",     function ()
                 awful.tag.incncol(-1)
                 display_nmaster_ncol()
                                              end,
-	     "Decrease number of columns"),
+         "Decrease number of columns"),
    awful.key({ modkey,           }, "space", function () awful.layout.inc(config.layouts,  1) end,
-	     "Next layout"),
+         "Next layout"),
    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(config.layouts, -1) end,
-	     "Previous layout"),
+         "Previous layout"),
    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
-	     "Swap with next window"),
+         "Swap with next window"),
    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end,
-	     "Swap with previous window"),
+         "Swap with previous window"),
 
    keydoc.group("Misc"),
 
    -- Spawn a terminal
    awful.key({ modkey,           }, "Return", function () awful.util.spawn(config.terminal) end,
-	     "Spawn a terminal"),
+         "Spawn a terminal"),
 
    -- Screenshot
    awful.key({}, "Print", function() screenshot("root") end),
@@ -284,11 +284,9 @@ config.keys.global = awful.util.table.join(
 config.keys.client = awful.util.table.join(
    keydoc.group("Window-specific bindings"),
    awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end,
-	     "Fullscreen"),
-   awful.key({ modkey,           }, "x",      function (c) c:kill()                                           end,
-	     "Close"),
-   awful.key({ modkey,           }, "F12",    function() awful.util.spawn("gnome-screensaver-command --lock") end,
-	     "Lock Screen"),
+         "Fullscreen"),
+   awful.key({ modkey, "Shift" }, "c",      function (c) c:kill()                                           end,
+         "Close"),
    awful.key({ modkey, "Shift" }, "q",      awesome.quit,
          "Quit Awesome"),
    awful.key({ modkey,           }, "o",
@@ -303,21 +301,38 @@ config.keys.client = awful.util.table.join(
              end, "Move to the other screen"),
    awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle, "Toggle floating"),
    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
-	     "Switch with master window"),
+         "Switch with master window"),
    awful.key({ modkey,           }, "t",      function (c) c:raise()            end,
-	     "Raise window"),
+         "Raise window"),
    awful.key({ modkey,           }, "s",      function (c) c.sticky = not c.sticky end,
-	     "Stick window"),
+         "Stick window"),
    awful.key({ modkey,           }, "i",      dbg,
-	     "Get client-related information"),
+         "Get client-related information"),
    awful.key({ modkey,           }, "m",
-	     function (c)
-		c.maximized_horizontal = not c.maximized_horizontal
-		c.maximized_vertical   = not c.maximized_vertical
+         function (c)
+        c.maximized_horizontal = not c.maximized_horizontal
+        c.maximized_vertical   = not c.maximized_vertical
                 c:raise()
-	     end,
-	     "Maximize"),
+         end,
+         "Maximize"),
 
+    awful.key({ modkey,           }, "Tab",
+        function ()
+            -- awful.client.focus.history.previous()
+            awful.client.focus.byidx(-1)
+            if client.focus then
+                client.focus:raise()
+            end
+        end),
+
+    awful.key({ modkey, "Shift"   }, "Tab",
+        function ()
+            -- awful.client.focus.history.previous()
+            awful.client.focus.byidx(1)
+            if client.focus then
+                client.focus:raise()
+            end
+        end),
 
    -- Screenshot
    awful.key({ modkey }, "Print", screenshot, "Screenshot")
