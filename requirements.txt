@@ -21,3 +21,4 @@ gnome-bluetooth
 pulseaudio
 numlockx
 ruby-notify
+xdotool
