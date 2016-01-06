@@ -2,10 +2,13 @@
 
 awesome
 awesome-extra
+i3lock
+xss-lock
 xbacklight
 libnotify-bin
 xfonts-terminus
 ttf-dejavu
+xcompmgr
 python-xpyb
 python-imaging
 fvwm
@@ -16,4 +19,5 @@ alsa-utils
 pavucontrol
 gnome-bluetooth
 pulseaudio
+numlockx
 ruby-notify

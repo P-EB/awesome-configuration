@@ -7,6 +7,8 @@ local execute = {
    "pulseaudio --check || pulseaudio -D",
    "udisks-glue -p /run/user/$(id -u)/udisks-glue.pid",
    "xset -b",	-- Disable bell
+   -- Enable numlock
+   "numlockx on",
    -- Default browser
    "xdg-mime default " .. config.browser .. ".desktop " ..
       "x-scheme-handler/http " ..
@@ -23,3 +25,7 @@ os.execute(table.concat(execute, ";"))
 xrun("polkit-gnome-authentication-agent-1",
      "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1")
 xrun("NetworkManager Applet", "nm-applet")
+
+-- I do not use xsession as I don't run startx
+xrun("xsslock", 
+     awful.util.getdir("config") .. "/bin/xss-lock start")

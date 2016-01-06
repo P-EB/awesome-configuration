@@ -1,16 +1,7 @@
 -- Lockscreen
 
-local icons = loadrc("icons", "vbe/icons")
-
-xrun("xlockdaemon", "gnome-screensaver")
-xrun("xautolock",
-     awful.util.getdir("config") ..
-        "/bin/xautolock " ..
-        icons.lookup({name = "system-lock-screen", type = "actions" }))
-
 local lock = function()
-   awful.util.spawn(awful.util.getdir("config") ..
-                    "/bin/locker", false)
+   os.execute("xset s activate")
 end
 
 config.keys.global = awful.util.table.join(
