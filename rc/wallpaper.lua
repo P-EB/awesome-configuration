@@ -12,8 +12,8 @@ local change = function()
    awful.util.spawn_with_shell(
       awful.util.getdir("config") .. "/bin/build-wallpaper " ..
 	 "--crop --directory " .. config.wallpaper.directory ..
-	 " --target " .. config.wallpaper.current ..
-	 "&& fvwm-root -r " .. config.wallpaper.current)
+     " --target " .. config.wallpaper.current ..
+     " && display -window root " .. config.wallpaper.current)
 end
 
 wtimer:connect_signal("timeout", function()

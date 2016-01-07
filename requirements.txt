@@ -5,14 +5,13 @@ awesome-extra
 i3lock
 xss-lock
 xbacklight
+imagemagick
 libnotify-bin
 xfonts-terminus
 ttf-dejavu
 xcompmgr
 python-xpyb
 python-imaging
-fvwm
-fvwm-crystal
 gnome-themes-standard
 gnome-wine-icon-theme
 alsa-utils
