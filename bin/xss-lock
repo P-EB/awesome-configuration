@@ -15,7 +15,7 @@ case "$1" in
         trap 'exit 0' TERM INT
         trap "kill %% ; wait" EXIT
         notify-send "Lock screen" -t $(($notify * 1000)) \
-            "Screen will be locked in 10 seconds..."
+            "Screen will be locked in ${notify} seconds..."
         echo "$(date --rfc-3339=seconds) $me: notify: end"
         sleep 2147483647 &
         wait
