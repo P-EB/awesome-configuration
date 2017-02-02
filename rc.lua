@@ -1,3 +1,4 @@
+io = require("io")
 awful = require("awful")
 awful.autofocus = require("awful.autofocus")
 awful.rules = require("awful.rules")
@@ -69,8 +70,9 @@ config.layouts = {
    awful.layout.suit.max,
    awful.layout.suit.max.fullscreen,
 }
-config.hostname = awful.util.pread('uname -n'):gsub('\n', '')
-config.browser = "iceweasel"
+local file = io.popen("uname -n", "r")
+config.hostname = file:read("*all"):gsub('\n', '')
+config.browser = "firefox"
 
 -- Remaining modules
 loadrc("xrun")			-- xrun function

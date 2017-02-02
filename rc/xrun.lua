@@ -1,5 +1,7 @@
 -- run a command only if the client does not already exist
 
+local gears = require("gears")
+
 local xrun_now = function(name, cmd)
    -- Try first the list of clients from awesome (which is available
    -- only if awesome has fully started, therefore, this function
@@ -20,13 +22,13 @@ local xrun_now = function(name, cmd)
    if os.execute("xwininfo -name '" .. name .. "' > /dev/null 2> /dev/null") == 0 then
       return
    end
-   awful.util.spawn(cmd or name, false)
+   awful.spawn(cmd or name, false)
 end
 
 -- Run a command if not already running.
 xrun = function(name, cmd)
    -- We need to wait for awesome to be ready. Hence the timer.
-   local stimer = timer { timeout = 0 }
+   local stimer = gears.timer { timeout = 0 }
    local run = function()
       stimer:stop()
       xrun_now(name, cmd)

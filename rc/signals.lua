@@ -6,7 +6,7 @@ local function mouse_follow_focus(c)
    -- Move the mouse to the top left corner
    if c.type ~= "dialog" then
       local cc = c:geometry()
-      local _, x, y = awful.mouse.client.corner(nil, "top_left")
+      local _, x, y = awful.placement["top_left"](mouse)
       local px, py = mouse.coords()["x"], mouse.coords()["y"]
       if x and y then
           if not (x <= px and px <= x + cc.width + 2*theme.border_width and y <= py and py <= y + cc.height + 2*theme.border_width) then

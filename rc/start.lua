@@ -1,11 +1,10 @@
 -- Spawn a composoting manager
-awful.util.spawn("compton --backend glx --xrender-sync --xrender-sync-fence --vsync opengl-swc --paint-on-overlay", false)
+awful.spawn("compton --backend glx --xrender-sync --xrender-sync-fence --vsync opengl-swc --paint-on-overlay", false)
 
 -- Start idempotent commands
 local execute = {
    -- Start PulseAudio
    "pulseaudio --check || pulseaudio -D",
-   "udisks-glue -p /run/user/$(id -u)/udisks-glue.pid",
    "xset -b",	-- Disable bell
    -- Enable numlock
    "numlockx on",

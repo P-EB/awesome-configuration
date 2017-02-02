@@ -1,6 +1,6 @@
 -- Small modifications to anrxc's zenburn theme
 
-local na = awful.util.color_strip_alpha
+local na = awful.util.ensure_pango_color
 local icons = awful.util.getdir("config") .. "/icons"
 
 local function scale()

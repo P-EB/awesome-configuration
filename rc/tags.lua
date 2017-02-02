@@ -96,23 +96,25 @@ config.keys.global = awful.util.table.join(
    awful.key({ modkey, "Shift"}, "o",
              function()
                 if screen.count() == 1 then return nil end
-                local t = awful.tag.selected()
-                local o = awful.tag.getscreen(t)
-                local s = awful.util.cycle(screen.count(), o + 1)
+                local s = mouse.screen
+                local t = s.selected_tag
+                local si = screen[awful.util.cycle(screen.count(), s.index + 1)]
                 awful.tag.history.restore()
-                t = shifty.tagtoscr(s, t)
-                awful.tag.viewonly(t)
+                t = shifty.tagtoscr(si, t)
+                t:view_only()
+                mouse.screen = si
              end,
              "Send tag to next screen"),
    awful.key({ modkey, "Control", "Shift"}, "o",
              function()
                 if screen.count() == 1 then return nil end
-                local t = awful.tag.selected()
-                local o = awful.tag.getscreen(t)
-                local s = awful.util.cycle(screen.count(), o + 1)
-                for _, t in pairs(screen[o]:tags()) do
-                   shifty.tagtoscr(s, t)
+                local s = mouse.screen
+                local t = s.selected_tag
+                local si = screen[awful.util.cycle(screen.count(), s.index + 1)]
+                for _, t in pairs(screen[s.index].tags) do
+                   shifty.tagtoscr(si, t)
                 end
+                mouse.screen = si
              end,
              "Send all tags to next screen"),
    awful.key({ modkey }, "#19", shifty.add, "Create a new tag"),
@@ -129,9 +131,9 @@ for i = 1, (shifty.config.maxtags or 9) do
       awful.key({ modkey }, "#" .. i + 9,
                 function ()
                    local t = shifty.getpos(i)
-                   local s = awful.tag.getscreen(t)
+                   local s = t.screen
                    local c = awful.client.focus.history.get(s, 0)
-                   awful.tag.viewonly(t)
+                   t:view_only()
                    mouse.screen = s
                    if c then client.focus = c end
                 end,
@@ -147,7 +149,7 @@ for i = 1, (shifty.config.maxtags or 9) do
                    local c = client.focus
                    if c then
                       local t = shifty.getpos(i, {nospawn = true })
-                      awful.client.movetotag(t, c)
+                      c:move_to_tag(t)
                    end
                 end,
                 i == 5 and "Move window to this tag" or nil),

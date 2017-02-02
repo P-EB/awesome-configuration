@@ -28,11 +28,11 @@
 
 local setmetatable = setmetatable
 local string = string
+local gears = require("gears")
 local awful  = require("awful")
-local capi   = { mouse = mouse,
-                 screen = screen,
-                 client = client,
-                 timer = timer }
+local capi = { mouse = mouse,
+               screen = screen,
+               client = client }
 
 -- I use a namespace for my modules...
 module("vbe/quake")
@@ -149,7 +149,7 @@ function QuakeConsole:new(config)
               end)
 
    -- "Reattach" currently running QuakeConsole. This is in case awesome is restarted.
-   local reattach = capi.timer { timeout = 0 }
+   local reattach = gears.timer { timeout = 0 }
    reattach:connect_signal("timeout",
                function()
               reattach:stop()

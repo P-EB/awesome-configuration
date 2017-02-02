@@ -1,5 +1,6 @@
 -- Handle volume (through pulseaudio)
 
+local io           = require("io")
 local awful        = require("awful")
 local naughty      = require("naughty")
 local tonumber     = tonumber
@@ -16,7 +17,8 @@ local volid = nil
 local function change(what)
    os.execute("amixer -q sset Master " .. what, false)
    -- Read the current value
-   local out = awful.util.pread("amixer sget Master")
+   local file = io.popen("amixer sget Master", "r")
+   local out = file:read("*all")
    local vol, mute = out:match("([%d]+)%%.*%[([%l]*)")
    if not mute or not vol then return end
 

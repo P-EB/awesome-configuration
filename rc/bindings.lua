@@ -236,7 +236,7 @@ config.keys.global = awful.util.table.join(
    keydoc.group("Misc"),
 
    -- Spawn a terminal
-   awful.key({ modkey,           }, "Return", function () awful.util.spawn(config.terminal) end,
+   awful.key({ modkey,           }, "Return", function () awful.spawn(config.terminal) end,
          "Spawn a terminal"),
 
    -- Screenshot
@@ -292,7 +292,7 @@ config.keys.client = awful.util.table.join(
    awful.key({ modkey,           }, "o",
              function (c)
                 if screen.count() == 1 then return nil end
-                local s = awful.util.cycle(screen.count(), c.screen + 1)
+                local s = awful.util.cycle(screen.count(), c.screen.index + 1)
                 if awful.tag.selected(s) then
                    c.screen = s
                    client.focus = c

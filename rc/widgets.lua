@@ -1,4 +1,5 @@
 -- Widgets
+io = require("io")
 vicious = require("vicious")
 wibox = require("wibox")
 gears = require("gears")
@@ -42,7 +43,8 @@ local cal = (
      local datespec = os.date("*t")
      datespec = datespec.year * 12 + datespec.month - 1 + offset
      datespec = (datespec % 12 + 1) .. " " .. math.floor(datespec / 12)
-     local cal = awful.util.pread("ncal -w -m " .. datespec)
+     local file = io.popen("ncal -w -m" .. datespec, "r")
+     local cal = file:read("*all")
      -- Highlight the current date and month
      cal = cal:gsub("_.([%d ])",
             string.format('<span color="%s">%%1</span>',
@@ -92,7 +94,7 @@ cpuicon:set_image(beautiful.icons .. "/widgets/cpu.png")
 local thermalwidget  = wibox.widget.textbox()
 
 -- Register
-vicious.register(thermalwidget, vicious.widgets.thermal, " <span color='yellow'>@</span> <span color='" .. beautiful.fg_widget_value .. "'>$1°C</span>", 1, { "coretemp.0/hwmon/hwmon1", "core"} )
+vicious.register(thermalwidget, vicious.widgets.thermal, " <span color='yellow'>@</span> <span color='" .. beautiful.fg_widget_value .. "'>$1°C</span>", 1, { "coretemp.0/hwmon/hwmon2", "core"} )
 
 -- Battery widget
 batwidget = wibox.widget.textbox()
@@ -124,7 +126,7 @@ netupicon:set_image(beautiful.icons .. "/widgets/up.png")
 local netdownicon = wibox.widget.imagebox()
 netdownicon:set_image(beautiful.icons .. "/widgets/down.png")
 
-local netgraph = awful.widget.graph()
+local netgraph = wibox.widget.graph()
 netgraph:set_width(80):set_height(16 * theme.scale)
 netgraph:set_stack(true):set_scale(true)
 netgraph:set_border_color(beautiful.fg_widget_border)
@@ -155,13 +157,12 @@ vicious.register(netup, vicious.widgets.net,
             return string.format("%d B", val)
         end
         -- Down
-        netdown.text = string.format('<span color="' .. beautiful.fg_widget_value ..
-                    '">%08s</span>', format(down))
+        netdown.text = string.format('<span color="' .. beautiful.fg_widget_value .. '">%08s</span>', format(down))
         -- Up
-        return string.format('<span color="' .. beautiful.fg_widget_value ..
-                    '">%08s</span>', format(up))
+        return string.format('<span color="' .. beautiful.fg_widget_value .. '">%08s</span>', format(up))
     end, 1)
-vicious.register(netdown, vicious.widgets.net, function (widgets, args)
+vicious.register(netdown, vicious.widgets.net,
+    function (widgets, args)
         return netdown.text
     end, 1)
 
@@ -230,21 +231,13 @@ vicious.register(fswidget, vicious.widgets.fs,
 
 local systray = wibox.widget.systray()
 
--- Wibox initialisation
-local mywibox     = {}
-local promptbox = {}
-local layoutbox = {}
-
-local taglist = {}
-local tasklist = {}
-
-tasklist.buttons = awful.util.table.join(
+local tasklist_buttons = awful.util.table.join(
    awful.button({ }, 1, function (c)
            if c == client.focus then
               c.minimized = true
            else
-              if not c:isvisible() then
-             awful.tag.viewonly(c:tags()[1])
+              if not c:isvisible() and c.first_tag then
+                  c.first_tag:view_only()
               end
               -- This will also un-minimize
               -- the client, if needed
@@ -253,38 +246,45 @@ tasklist.buttons = awful.util.table.join(
            end
             end))
 
-for s = 1, screen.count() do
+local taglist_buttons = {}
+
+awful.screen.connect_for_each_screen(function(s)
     gears.wallpaper.maximized(beautiful.wallpaper, s, true)
-    promptbox[s] = awful.widget.prompt()
-    layoutbox[s] = awful.widget.layoutbox(s)
-    tasklist[s]  = awful.widget.tasklist(s, function(c)
+
+    s.textbox = wibox.widget.textbox()
+    s.promptbox = awful.widget.prompt()
+    s.layoutbox = awful.widget.layoutbox(s)
+
+    s.tasklist = awful.widget.tasklist(s, function(c)
       local title, color, _, icon = awful.widget.tasklist.filter.currenttags(c, s)
       return title, color, nil, icon
-       end, tasklist.buttons)
+       end, tasklist_buttons)
 
     -- Create the taglist
-    taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.filter.all, taglist.buttons)
+    s.taglist = awful.widget.taglist.new(s, awful.widget.taglist.filter.all, taglist_buttons)
     -- Create the wibox
-    mywibox[s] = awful.wibox({ screen = s,
-                 fg = beautiful.fg_normal,
-                 bg = beautiful.bg_widget,
-                 position = "top",
-                 height = 16 * theme.scale,
+    s.wibox = awful.wibar({
+        screen = s,
+        fg = beautiful.fg_normal,
+        bg = beautiful.bg_widget,
+        position = "top",
+        height = 16 * theme.scale,
     })
 
     -- Add widgets to the wibox
     local on = function(n, what)
-       if s == n or n > screen.count() then return what end
+       if s.index == n or n > screen.count() then return what end
        return e_widget
     end
 
     local left_layout = wibox.layout.fixed.horizontal()
     if screen.count() > 1 then left_layout:add(sepopen) end
-    left_layout:add(layoutbox[s])
+    left_layout:add(s.layoutbox)
     if screen.count() > 1 then left_layout:add(spacer) end
-    left_layout:add(taglist[s])
+    left_layout:add(s.taglist)
     if screen.count() > 1 then left_layout:add(sepclose) end
-    left_layout:add(promptbox[s])
+    left_layout:add(s.promptbox)
+    left_layout:add(s.textbox)
 
     local right_layout = wibox.layout.fixed.horizontal()
     right_layout:add(on(1, sepopen))
@@ -331,15 +331,15 @@ for s = 1, screen.count() do
 
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(tasklist[s])
+    layout:set_middle(s.tasklist)
     layout:set_right(right_layout)
 
-    mywibox[s]:set_widget(layout)
-end
+    s.wibox:set_widget(layout)
+end)
 
 config.keys.global = awful.util.table.join(
    config.keys.global,
-   awful.key({ modkey }, "r", function () promptbox[mouse.screen]:run() end,
+   awful.key({ modkey }, "r", function () awful.screen.focused().promptbox:run() end,
          "Prompt for a command"))
 
 config.taglist = taglist

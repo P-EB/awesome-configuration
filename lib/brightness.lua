@@ -1,5 +1,6 @@
 -- Handle brightness (with xbacklight)
 
+local io           = require("io")
 local awful        = require("awful")
 local naughty      = require("naughty")
 local tonumber     = tonumber
@@ -15,7 +16,8 @@ module("vbe/brightness")
 local nid = nil
 local function change(what)
    os.execute("xbacklight -" .. what)
-   local out = awful.util.pread("xbacklight -get")
+   local file = io.popen("xbacklight -get", 'r')
+   local out = file:read('*all')
    if not out then return end
 
    out = tonumber(out)
