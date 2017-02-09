@@ -16,11 +16,12 @@ local e_widget = wibox.widget.base.empty_widget()
 
 -- Date
 local datewidget = wibox.widget.textbox()
-local dateformat = "%H:%M"
-if screen.count() > 1 then dateformat = "%a %d/%m, " .. dateformat end
-vicious.register(datewidget, vicious.widgets.date,
-         '<span color="' .. beautiful.fg_widget_clock .. '">' ..
-            dateformat .. '</span>', 10)
+local dateformat = "%a %d/%m/%Y %H:%M"
+vicious.register(datewidget,
+                 vicious.widgets.date,
+                 '<span color="' .. beautiful.fg_widget_clock .. '">' ..
+                     dateformat .. '</span>',
+                 10)
 local dateicon = wibox.widget.imagebox()
 dateicon:set_image(beautiful.icons .. "/widgets/clock.png")
 local cal = (
