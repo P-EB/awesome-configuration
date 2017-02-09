@@ -158,13 +158,13 @@ vicious.register(netup, vicious.widgets.net,
             return string.format("%d B", val)
         end
         -- Down
-        netdown.text = string.format('<span color="' .. beautiful.fg_widget_value .. '">%08s</span>', format(down))
+        netdown.down = format(down)
         -- Up
         return string.format('<span color="' .. beautiful.fg_widget_value .. '">%08s</span>', format(up))
     end, 1)
 vicious.register(netdown, vicious.widgets.net,
     function (widgets, args)
-        return netdown.text
+        return string.format('<span color="' .. beautiful.fg_widget_value .. '">%08s</span>', netdown.down)
     end, 1)
 
 -- Memory usage
