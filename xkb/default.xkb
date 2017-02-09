@@ -6,11 +6,11 @@
 #  - us+fr and switch with rctrl+rshift
 #  - pause key becomes xscreensaver
 xkb_keymap {
-        xkb_keycodes  { include "evdev+aliases(qwerty)" };
+        xkb_keycodes  { include "evdev+aliases(azerty)" };
         xkb_types     { include "complete" };
         xkb_compat    { include "complete" };
         xkb_symbols   { include "pc+us+fr:2+inet(evdev)"
-                        include "compose(rwin)+compose(menu)"
+                        include "compose(rctrl)+compose(menu)"
                         include "ctrl(nocaps)"
                         include "group(rctrl_rshift_toggle)"
                         include "vbe(pause)" };

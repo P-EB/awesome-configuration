@@ -5,7 +5,7 @@ export PATH=$HOME/bin:/sbin:/usr/local/sbin:/usr/sbin:/bin:/usr/local/bin:/usr/b
 
 # Setup locale
 export LANG=fr_FR.utf8
-export LC_MESSAGES=en_US.utf8
+export LC_MESSAGES=fr_FR.utf8
 
 # Ensure we use the appropriate gtkrc-2.0 file
 export GTK2_RC_FILES=$HOME/.gtkrc-2.0
