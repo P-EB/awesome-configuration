@@ -1,7 +1,6 @@
 -- Change wallpaper
 
 local gears = require("gears")
-
 local wtimer = gears.timer { timeout = 0 }
 
 config.wallpaper = {}
@@ -18,10 +17,15 @@ local change = function()
      " && display -window root " .. config.wallpaper.current)
 end
 
-wtimer:connect_signal("timeout", function()
-		     change()
-		     wtimer:stop()
-		     wtimer.timeout = math.random(3000, 3600)
-		     wtimer:start()
-			     end)
+local setwallpaper = function()
+    change()
+    wtimer:stop()
+    wtimer.timeout = math.random(600, 900)
+    wtimer:start()
+end
+
+screen.connect_signal("list", setwallpaper)
+screen.connect_signal("property::geometry", setwallpaper)
+wtimer:connect_signal("timeout", setwallpaper)
 wtimer:start()
+
