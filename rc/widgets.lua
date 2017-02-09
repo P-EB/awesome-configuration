@@ -332,29 +332,16 @@ local tasklist_buttons = awful.util.table.join(
 
 local taglist_buttons = {}
 
-awful.screen.connect_for_each_screen(function(s)
-    gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+-- refresh_layouts - refreshes the layouts on all screens
+function refresh_layouts()
+    for sc in screen do
+        apply_layout(sc)
+    end
+end
 
-    s.textbox = wibox.widget.textbox()
-    s.promptbox = awful.widget.prompt()
-    s.layoutbox = awful.widget.layoutbox(s)
-
-    s.tasklist = awful.widget.tasklist(s, function(c)
-      local title, color, _, icon = awful.widget.tasklist.filter.currenttags(c, s)
-      return title, color, nil, icon
-       end, tasklist_buttons)
-
-    -- Create the taglist
-    s.taglist = awful.widget.taglist.new(s, awful.widget.taglist.filter.all, taglist_buttons)
-    -- Create the wibox
-    s.wibox = awful.wibar({
-        screen = s,
-        fg = beautiful.fg_normal,
-        bg = beautiful.bg_widget,
-        position = "top",
-        height = 16 * theme.scale,
-    })
-
+-- apply_layout - applies a layout on screen
+-- @param s : the screen
+function apply_layout(s)
     -- Add widgets to the wibox
     local on = function(n, what)
        if s.index == n or n > screen.count() then return what end
@@ -419,7 +406,37 @@ awful.screen.connect_for_each_screen(function(s)
     layout:set_right(right_layout)
 
     s.wibox:set_widget(layout)
-end)
+end
+
+-- setup_screen - sets a screen up
+-- @param s : the screen
+function setup_screen(s)
+    gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+
+    s.textbox = wibox.widget.textbox()
+    s.promptbox = awful.widget.prompt()
+    s.layoutbox = awful.widget.layoutbox(s)
+
+    s.tasklist = awful.widget.tasklist(s, function(c)
+      local title, color, _, icon = awful.widget.tasklist.filter.currenttags(c, s)
+      return title, color, nil, icon
+       end, tasklist_buttons)
+
+    -- Create the taglist
+    s.taglist = awful.widget.taglist.new(s, awful.widget.taglist.filter.all, taglist_buttons)
+    -- Create the wibox
+    s.wibox = awful.wibar({
+        screen = s,
+        fg = beautiful.fg_normal,
+        bg = beautiful.bg_widget,
+        position = "top",
+        height = 16 * theme.scale,
+    })
+
+    apply_layout(s)
+end
+awful.screen.connect_for_each_screen(setup_screen)
+screen.connect_signal("list", refresh_layouts)
 
 config.keys.global = awful.util.table.join(
    config.keys.global,
