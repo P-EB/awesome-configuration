@@ -1,5 +1,6 @@
 -- Tags
 
+local naughty = require("naughty")
 local shifty = loadrc("shifty", "vbe/shifty")
 local keydoc = loadrc("keydoc", "vbe/keydoc")
 

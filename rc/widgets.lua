@@ -5,6 +5,89 @@ wibox = require("wibox")
 gears = require("gears")
 local icons = loadrc("icons", "vbe/icons")
 
+--
+-- TimeoutHandledWindow
+--
+
+-- Table for the class definitions
+local TimeoutHandledWindow = {}
+-- failed table lookups on the instances should fallback to the class
+-- table, to get method
+TimeoutHandledWindow.__index = TimeoutHandledWindow
+-- So that TimeoutHandledWindow() instanciates a new object to avoid
+-- call of TimeoutHandledWindow.new()
+setmetatable(TimeoutHandledWindow, {
+  __call = function (cls, ...)
+    return cls.new(...)
+  end,
+})
+
+function TimeoutHandledWindow.new(args)
+  local self = setmetatable({}, TimeoutHandledWindow)
+  self.widget = nil
+  -- Main part of the constructor
+  if args.command then
+     self.command = args.command
+  else
+     self.command = nil
+  end
+
+  if args.text then
+     self.text = args.text
+  else
+     self.text = nil
+  end
+
+  if self.command == nil and self.text == nil then
+     self.text = "What should I display?"
+  end
+  
+  return self
+end
+
+-- TimeoutHandledWindow:fun(args) <=> TimeoutHandledWindow.fun(self, args)
+function TimeoutHandledWindow:display()
+   local output = self:run()
+   if output == nil then
+      output = self.text
+   end
+
+   self.widget = naughty.notify(
+      {
+         text = string.format('<span font="%s">%s</span>',
+                              "Terminus 8",
+                              output),
+         timeout = 0,
+         hover_timeout = 0.5,
+         screen = mouse.screen,
+      }
+   )
+end
+
+function TimeoutHandledWindow:hide()
+   naughty.destroy(self.widget)
+   self.widget = nil
+end
+
+-- Runs the command if existent
+function TimeoutHandledWindow:run()
+   if self.command == nil then
+      return
+   end
+   local file = io.popen(self.command, 'r')
+   local output = file:read('*all')
+
+   if self.filter ~= nil then
+      output = self.filter(output)
+   end
+
+   return output
+end
+
+--
+-- End of TimeoutHandledWindow
+--
+
 -- Separators
 local sepopen = wibox.widget.imagebox()
 sepopen:set_image(beautiful.icons .. "/widgets/left.png")
