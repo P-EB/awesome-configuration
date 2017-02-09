@@ -10,6 +10,17 @@ local tagicon = function(icon)
    return nil
 end
 
+local filtertable = function (tab, value)
+   local k = 1
+   while tab[k] do
+       if tab[k] == value then
+           table.remove(tab, k)
+       else
+           k = k + 1
+       end
+   end
+end
+
 shifty.config.tags = {
 --    www = {
 --       position = 2,
@@ -121,6 +132,41 @@ config.keys.global = awful.util.table.join(
    awful.key({ modkey, "Shift" }, "#19", shifty.del, "Delete tag"),
    awful.key({ modkey, "Control" }, "#19", shifty.rename, "Rename tag"))
 
+local tag_history = {}
+-- historytagmove - Historizes tags moves and allows to go back
+function historytagmove(i)
+   if tag_history == nil then
+      tag_history = {}
+   end
+
+   local histsize = #tag_history
+   local ni = i
+
+   if histsize > 1 and tag_history[histsize] == ni then
+      local found = false
+      while not found and histsize > 1 do
+         ni = tag_history[histsize - 1]
+         table.remove(tag_history)
+
+         if not shifty.findpos(ni) then
+            filtertable(tag_history, ni)
+            histsize = #tag_history
+         else
+            found = true
+         end
+      end
+   elseif (histsize >= 1 and tag_history[histsize] ~= ni) or histsize == 0 then
+      table.insert(tag_history, ni)
+   end
+
+   local t = shifty.getpos(ni)
+   local s = t.screen
+   local c = awful.client.focus.history.get(s, 0)
+   t:view_only()
+   mouse.screen = s
+   if c then client.focus = c end
+end
+
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
@@ -130,12 +176,7 @@ for i = 1, (shifty.config.maxtags or 9) do
       keydoc.group("Tag management"),
       awful.key({ modkey }, "#" .. i + 9,
                 function ()
-                   local t = shifty.getpos(i)
-                   local s = t.screen
-                   local c = awful.client.focus.history.get(s, 0)
-                   t:view_only()
-                   mouse.screen = s
-                   if c then client.focus = c end
+                    historytagmove(i)
                 end,
                 i == 5 and "Display only this tag" or nil),
       awful.key({ modkey, "Control" }, "#" .. i + 9,

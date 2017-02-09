@@ -758,6 +758,22 @@ function sweep()
     end)
 end
 
+-- findpos : returns wether there is a tag with position that exists
+-- @param pos : the index to find
+-- @return res : true or false
+function findpos(pos)
+    -- search for existing tag assigned to pos
+    for iter_scr in capi.screen do
+        for j, t in ipairs(iter_scr.tags) do
+            if awful.tag.getproperty(t, "position") == pos then
+               return true
+            end
+        end
+    end
+
+    return false
+end
+
 --getpos : returns a tag to match position
 -- @param pos : the index to find
 -- @return v : the tag (found or created) at position == 'pos'
