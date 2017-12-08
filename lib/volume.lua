@@ -1,5 +1,7 @@
 -- Handle volume (through pulseaudio)
 
+local volume = {}
+
 local io           = require("io")
 local awful        = require("awful")
 local naughty      = require("naughty")
@@ -8,10 +10,7 @@ local string       = string
 local os           = os
 
 -- A bit odd, but...
-require("lib/icons")
-local icons        = package.loaded["vbe/icons"]
-
-module("vbe/volume")
+local icons = require("lib/icons")
 
 local volid = nil
 local function change(what)
@@ -40,19 +39,21 @@ local function change(what)
 			    replaces_id = volid }).id
 end
 
-function increase()
+function volume.increase()
    change("5%+")
 end
 
-function decrease()
+function volume.decrease()
    change("5%-")
 end
 
-function toggle()
+function volume.toggle()
    change("toggle")
 end
 
 -- run pavucontrol
-function mixer()
+function volume.mixer()
    awful.util.spawn("pavucontrol", false)
 end
+
+return volume

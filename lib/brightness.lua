@@ -1,17 +1,17 @@
 -- Handle brightness (with xbacklight)
 
+local brightness = {}
+
 local io           = require("io")
 local awful        = require("awful")
 local naughty      = require("naughty")
 local tonumber     = tonumber
 local string       = string
 local os           = os
+local math         = require("math")
 
 -- A bit odd, but...
-require("lib/icons")
-local icons        = package.loaded["vbe/icons"]
-
-module("vbe/brightness")
+local icons        = require("lib/icons")
 
 local nid = nil
 local function change(what)
@@ -20,7 +20,7 @@ local function change(what)
    local out = file:read('*all')
    if not out then return end
 
-   out = tonumber(out)
+   out = math.floor(tonumber(out))
    local icon = icons.lookup({name = "display-brightness",
 			      type = "status"})
 
@@ -30,10 +30,12 @@ local function change(what)
 			  replaces_id = nid }).id
 end
 
-function increase()
+function brightness.increase()
    change("inc 5")
 end
 
-function decrease()
+function brightness.decrease()
    change("dec 5")
 end
+
+return brightness

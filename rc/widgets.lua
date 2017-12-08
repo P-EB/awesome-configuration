@@ -252,7 +252,8 @@ vicious.register(netdown, vicious.widgets.net,
 
 -- Memory usage
 -- Initialize widget
-memwidget = wibox.widget.textbox()
+local memwidget = wibox.widget.textbox()
+
 -- Register widget
 vicious.register(memwidget, vicious.widgets.mem, function(widget, args)
 var="%</span>"

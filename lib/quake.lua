@@ -26,6 +26,8 @@
 -- QuakeConsoleNeedsUniqueName. Otherwise, you may run into problems
 -- with focus.
 
+local quake = {}
+
 local setmetatable = setmetatable
 local string = string
 local gears = require("gears")
@@ -33,9 +35,6 @@ local awful  = require("awful")
 local capi = { mouse = mouse,
                screen = screen,
                client = client }
-
--- I use a namespace for my modules...
-module("vbe/quake")
 
 local QuakeConsole = {}
 
@@ -165,4 +164,8 @@ function QuakeConsole:toggle()
    self:display()
 end
 
-setmetatable(_M, { __call = function(_, ...) return QuakeConsole:new(...) end })
+quake.QuakeConsole = QuakeConsole
+
+setmetatable(quake, { __call = function(_, ...) return QuakeConsole:new(...) end })
+
+return quake

@@ -1,5 +1,7 @@
 -- Lookup function for icons
 
+local icons = {}
+
 local paths = {
    "/usr/share/icons/gnome-wine",
    "/usr/share/icons/gnome",
@@ -29,10 +31,8 @@ local type   = type
 local pairs  = pairs
 local awful  = require("awful")
 
-module("vbe/icons")
-
 -- Lookup for an icon. Return full path.
-function lookup(arg)
+function icons.lookup(arg)
    local inames = assert(arg.name)
    local isizes = arg.size or sizes
    local itypes = arg.type or types
@@ -61,3 +61,5 @@ function lookup(arg)
       end
    end
 end
+
+return icons

@@ -6,6 +6,8 @@
 -- To get the complete interface:
 --   mdbus2 org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2
 
+local spotify_module = {}
+
 local awful = require("awful")
 local dbg   = dbg
 local pairs = pairs
@@ -13,8 +15,6 @@ local os    = os
 local capi = {
    client = client
 }
-
-module("vbe/spotify")
 
 -- Get spotify window
 local function spotify()
@@ -38,7 +38,7 @@ local function cmd(command)
 end
 
 -- Show spotify
-function show()
+function spotify_module.gcshow()
    local client = spotify()
    if client then
       if not client:isvisible() then
@@ -51,30 +51,32 @@ function show()
    end
 end
 
-function playpause()
+function spotify_module.gcplaypause()
    cmd("PlayPause")
 end
 
-function play()
+function spotify_module.gcplay()
    cmd("Play")
 end
 
-function pause()
+function spotify_module.gcpause()
    cmd("Pause")
 end
 
-function stop()
+function spotify_module.gcstop()
    cmd("Stop")
 end
 
-function next()
+function spotify_module.gcnext()
    cmd("Next")
 end
 
-function previous()
+function spotify_module.gcprevious()
    cmd("Previous")
 end
 
-function mixer()
+function spotify_module.gcmixer()
    awful.util.spawn("pavucontrol")
 end
+
+return spotify_module

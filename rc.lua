@@ -41,7 +41,7 @@ function loadrc(name, mod)
 
    -- Is it a module?
    if mod then
-      return package.loaded[mod]
+     package.loaded[mod] = result
    end
 
    return result
@@ -87,7 +87,7 @@ loadrc("tags")			-- tags handling
 loadrc("xlock")			-- lock screen
 loadrc("signals")		-- window manager behaviour
 loadrc("rules")			-- window rules
-loadrc("quake")			-- quake console
 loadrc("xrandr")		-- xrandr menu
+loadrc("quake", "vbe/quake")			-- quake console
 
 root.keys(config.keys.global)

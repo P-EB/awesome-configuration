@@ -1,5 +1,7 @@
 -- Document key bindings
 
+local keydoc = {}
+
 local awful     = require("awful")
 local table     = table
 local ipairs    = ipairs
@@ -14,8 +16,6 @@ local capi      = {
    root = root,
    client = client
 }
-
-module("vbe/keydoc")
 
 local doc = { }
 local currentgroup = "Misc"
@@ -71,7 +71,7 @@ local function unilen(str)
 end
 
 -- Start a new group
-function group(name)
+function keydoc.group(name)
    currentgroup = name
    return {}
 end
@@ -105,7 +105,7 @@ end
 
 -- Display help in a naughty notification
 local nid = nil
-function display()
+function keydoc.display()
    local strings = awful.util.table.join(
       markup(capi.root.keys()),
       capi.client.focus and markup(capi.client.focus:keys()) or {})
@@ -122,3 +122,5 @@ function display()
 			  hover_timeout = 0.1,
 			  timeout = 30 }).id
 end
+
+return keydoc
