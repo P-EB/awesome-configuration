@@ -24,6 +24,7 @@ os.execute(table.concat(execute, ";"))
 xrun("polkit-gnome-authentication-agent-1",
      "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1")
 xrun("NetworkManager Applet", "nm-applet")
+xrun("OwnCloud client", "owncloud")
 
 -- I do not use xsession as I don't run startx
 xrun("xsslock", 
